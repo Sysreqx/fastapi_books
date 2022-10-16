@@ -1,7 +1,6 @@
 from typing import Optional
 
 from fastapi import FastAPI
-from enum import Enum
 
 app = FastAPI()
 
@@ -39,6 +38,11 @@ async def read_all_books(skip_book: Optional[str] = None):
     return BOOKS
 
 
+@app.get("/read_book")
+async def read_book_query(book_name: str):
+    return BOOKS[book_name]
+
+
 @app.get("/{book_name}")
 async def get_book(book_name: str):
     return BOOKS[book_name]
@@ -57,9 +61,21 @@ async def create_book(book_title: str, book_author: str):
     BOOKS[f'book_{current_book_id + 1}'] = {'title': book_title, 'author': book_author}
     return BOOKS[f'book_{current_book_id + 1}']
 
+
 @app.put("/{book_name}")
 async def update_book(book_name: str, book_title: str, book_author: str):
     book_information = {'title': book_title, 'author': book_author}
     BOOKS[book_name] = book_information
     return book_information
 
+
+@app.delete("/delete_book")
+async def delete_book_query(book_name: str):
+    del BOOKS[book_name]
+    return f'Book {book_name} deleted'
+
+
+@app.delete("/{book_name}")
+async def delete_book(book_name: str):
+    del BOOKS[book_name]
+    return f'Book {book_name} deleted'
