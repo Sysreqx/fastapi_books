@@ -19,6 +19,17 @@ class Book(BaseModel):
                                        min_length=1)
     rating: int = Field(gt=-1, lt=101)
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "id": "7f644f5f-3fc0-4923-9a5a-782a38457c91",
+                "title": "Computer Science Pro",
+                "author": "Kaisar",
+                "description": "A very nice description ov a book",
+                "rating": 80
+            }
+        }
+
 
 @app.get("/")
 async def read_all_books():
