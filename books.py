@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from enum import Enum
 
 app = FastAPI()
 
@@ -26,7 +27,13 @@ BOOKS = {
     },
 }
 
+
 @app.get("/")
 async def read_all_books():
     return BOOKS
+
+@app.get("/{book_name}")
+async def get_book(book_name: str):
+    return BOOKS[book_name]
+
 
