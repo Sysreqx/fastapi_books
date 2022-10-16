@@ -7,6 +7,9 @@ from uuid import UUID
 app = FastAPI()
 
 
+BOOKS = []
+
+
 class Book(BaseModel):
     id: UUID
     title: str = Field(min_length=1)
@@ -17,11 +20,10 @@ class Book(BaseModel):
     rating: int = Field(gt=-1, lt=101)
 
 
-BOOKS = []
-
-
 @app.get("/")
 async def read_all_books():
+    if len(BOOKS) < 1:
+        create_book_no_api()
     return BOOKS
 
 
@@ -29,3 +31,31 @@ async def read_all_books():
 async def create_book(book: Book):
     BOOKS.append(book)
     return book
+
+
+def create_book_no_api():
+    book_1 = Book(id='7f644f5f-3fc0-4920-9a5a-782a38457c91',
+                  title='Title 1',
+                  author='Author 1',
+                  description='Description 1',
+                  rating=60)
+    book_2 = Book(id='baa52f64-881f-4684-bb33-74159baaeb76',
+                  title='Title 2',
+                  author='Author 2',
+                  description='Description 2',
+                  rating=70)
+    book_3 = Book(id='a811c277-72f7-400f-b645-38057c7d8801',
+                  title='Title 3',
+                  author='Author 3',
+                  description='Description 3',
+                  rating=55)
+    book_4 = Book(id='9bdae174-270a-4117-aa57-ad4a0ad4fc78',
+                  title='Title 4',
+                  author='Author 4',
+                  description='Description 4',
+                  rating=87)
+
+    BOOKS.append(book_1)
+    BOOKS.append(book_2)
+    BOOKS.append(book_3)
+    BOOKS.append(book_4)
