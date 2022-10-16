@@ -20,6 +20,7 @@ class Book(BaseModel):
     rating: int = Field(gt=-1, lt=101)
 
     class Config:
+
         schema_extra = {
             "example": {
                 "id": "7f644f5f-3fc0-4923-9a5a-782a38457c91",
@@ -32,9 +33,18 @@ class Book(BaseModel):
 
 
 @app.get("/")
-async def read_all_books():
+async def read_all_books(books_to_return: Optional[int] = None):
     if len(BOOKS) < 1:
         create_book_no_api()
+
+    if books_to_return and len(BOOKS) >= books_to_return > 0:
+        i = 1
+        new_books = []
+        while i <= books_to_return:
+            new_books.append(BOOKS[i - 1])
+            i += 1
+        return new_books
+
     return BOOKS
 
 
