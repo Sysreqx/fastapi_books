@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, status
 from pydantic import BaseModel, Field
 from uuid import UUID
 
@@ -30,8 +30,8 @@ class Book(BaseModel):
             "example": {
                 "id": "7f644f5f-3fc0-4923-9a5a-782a38457c91",
                 "title": "Computer Science Pro",
-                "author": "Kaisar",
-                "description": "A very nice description ov a book",
+                "author": "Caesar",
+                "description": "A very nice description of a book",
                 "rating": 80
             }
         }
@@ -99,7 +99,7 @@ async def read_book_no_rating(book_id: UUID):
     raise raise_item_cannot_be_found_exception()
 
 
-@app.post("/")
+@app.post("/", status_code=status.HTTP_201_CREATED)
 async def create_book(book: Book):
     BOOKS.append(book)
     return book
