@@ -25,7 +25,6 @@ class Book(BaseModel):
     rating: int = Field(gt=-1, lt=101)
 
     class Config:
-
         schema_extra = {
             "example": {
                 "id": "7f644f5f-3fc0-4923-9a5a-782a38457c91",
@@ -68,7 +67,6 @@ async def read_header(random_header: Optional[str] = Header(None)):
 
 @app.get("/")
 async def read_all_books(books_to_return: Optional[int] = None):
-
     if books_to_return and books_to_return < 0:
         raise NegativeNumberException(books_to_return=books_to_return)
 
@@ -87,8 +85,19 @@ async def read_all_books(books_to_return: Optional[int] = None):
 
 
 @app.post("/books/login")
-async def book_login(username: str = Form(), password: str = Form()):
-    return {"username": username, "password": password}
+async def book_login(book_name: str,
+                     username_header: str = Header(),
+                     pass_header: str = Header()):
+    if username_header == "FastAPIUser" and pass_header == "test1234!":
+
+        for x in BOOKS:
+            if x.title == book_name:
+                return x
+
+        raise raise_item_cannot_be_found_exception()
+
+    else:
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 @app.get("/book/{book_id}")
