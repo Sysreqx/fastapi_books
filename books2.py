@@ -1,6 +1,7 @@
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Request, status, Form, Header
+# from fastapi import FastAPI, HTTPException, Request, status, Header
+from fastapi import FastAPI, HTTPException, status, Header
 from pydantic import BaseModel, Field
 from uuid import UUID
 
@@ -51,15 +52,6 @@ class BookNoRating(BaseModel):
 BOOKS = []
 
 
-@app.exception_handler(NegativeNumberException)
-async def negative_number_exception_handler(request: Request, exception: NegativeNumberException):
-    return JSONResponse(
-        status_code=418,
-        content={"message": f"Hey, why do you want {exception.books_to_return} books?"
-                            f"You need to read more!"}
-    )
-
-
 @app.get("/header")
 async def read_header(random_header: Optional[str] = Header(None)):
     return {"Random-Header": random_header}
@@ -82,6 +74,16 @@ async def read_all_books(books_to_return: Optional[int] = None):
         return new_books
 
     return BOOKS
+
+
+@app.exception_handler(NegativeNumberException)
+# async def negative_number_exception_handler(request: Request, exception: NegativeNumberException):
+async def negative_number_exception_handler(exception: NegativeNumberException):
+    return JSONResponse(
+        status_code=418,
+        content={"message": f"Hey, why do you want {exception.books_to_return} books?"
+                            f"You need to read more!"}
+    )
 
 
 @app.post("/books/login")
