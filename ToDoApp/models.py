@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String
 from database import Base
 
+
 class Todos(Base):
     __tablename__ = "todos"
 
@@ -9,4 +10,3 @@ class Todos(Base):
     description = Column(String)
     priority = Column(Integer)
     complete = Column(Boolean, default=False)
-
