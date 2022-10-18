@@ -86,6 +86,8 @@ async def delete_todo(todo_id: int, db: Session = Depends(get_db)):
 
     db.query(models.Todos).filter(models.Todos.id == todo_id).delete()
 
+    db.commit()
+
     return successful_response(201)
 
 
