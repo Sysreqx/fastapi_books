@@ -60,7 +60,11 @@ async def read_todo(todo_id: int,
 
 
 @app.post("/")
-async def create_todo(todo: Todo, db: Session = Depends(get_db)):
+async def create_todo(todo: Todo,
+                      user: dict = Depends(get_current_user),
+                      db: Session = Depends(get_db)):
+    if user is None:
+        raise get_user_exception()
 
     todo_model = models.Todos()
 
@@ -68,6 +72,7 @@ async def create_todo(todo: Todo, db: Session = Depends(get_db)):
     todo_model.description = todo.description
     todo_model.priority = todo.priority
     todo_model.complete = todo.complete
+    todo_model.owner_id = user.get("id")
 
     db.add(todo_model)
     db.commit()
