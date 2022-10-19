@@ -15,15 +15,6 @@ from jose import jwt, JWTError
 SECRET_KEY = "4WHorQYtSRlUGW87Z9ob40a"
 ALGORITHM = "HS256"
 
-
-class CreateUser(BaseModel):
-    username: str
-    email: Optional[str]
-    firstname: str
-    lastname: str
-    password: str
-
-
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 models.Base.metadata.create_all(bind=engine)
@@ -89,24 +80,6 @@ async def get_current_user(token: str = Depends(oauth2_bearer)):
         return {"username": username, "id": user_id}
     except JWTError:
         raise get_user_exception()
-
-
-@router.post("/create/user")
-async def create_new_user(create_user: CreateUser, db: Session = Depends(get_db)):
-    create_user_model = models.Users()
-
-    create_user_model.username = create_user.username
-    create_user_model.email = create_user.email
-    create_user_model.firstname = create_user.firstname
-    create_user_model.lastname = create_user.lastname
-
-    hash_password = get_password_hash(create_user.password)
-
-    create_user_model.hashed_password = hash_password
-    create_user_model.is_active = True
-
-    db.add(create_user_model)
-    db.commit()
 
 
 @router.post("/token")
